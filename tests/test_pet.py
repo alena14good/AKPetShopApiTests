@@ -8,7 +8,7 @@ idNonexistentPet = 9999
 @allure.feature("Pet")
 class TestPet:
     @allure.title('Попытка удалить несуществующего питомца')
-    @allure.description('Сейчас будет проводиться запрос на удаление несуществующего питомца')
+    @allure.description('Тест описания Allure. Сейчас будет проводиться запрос на удаление несуществующего питомца.')
     def test_delete_nonexistent_pet(self):
         with allure.step('Шаг 1 из кейса'):
             response = requests.delete(f'{BASE_URL}/pet/{idNonexistentPet}')
