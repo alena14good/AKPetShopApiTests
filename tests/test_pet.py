@@ -10,7 +10,7 @@ class TestPet:
     @allure.title('Попытка удалить несуществующего питомца')
     @allure.description('Тест описания Allure. Сейчас будет проводиться запрос на удаление несуществующего питомца.')
     def test_delete_nonexistent_pet(self):
-        with allure.step('Шаг 1 из кейса'):
+        with allure.step('Удаляем несуществующего питомца'):
             response = requests.delete(f'{BASE_URL}/pet/{idNonexistentPet}')
 
         with allure.step('Проверка статус кода'):
