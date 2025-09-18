@@ -88,3 +88,34 @@ class TestPet:
             assert response_json['tags'][0]['name'] == payload['tags'][0]['name'], f'Создалась запись не с {payload['tags'][0]['name']}'
             assert response_json['status'] == payload['status'], f'Создалась запись не с {payload['status']}'
 
+    @allure.title ("Обновление информации о питомце (PUT /pet)")
+    def test_update_info_about_pet(self, create_pet):
+        with allure.step('Подготовка тестовых данных'):
+            pet_id = create_pet["id"]
+            payoload = {
+                "id": pet_id,
+                "name": "Alens",
+                "status": "sold"
+            }
+        with allure.step('Отправка запроса на обновление данных'):
+            response = requests.put(f'{BASE_URL}/pet', json=payoload)
+            assert response.status_code == 200, "Другой статус код"
+
+        with allure.step('Проверка, что создалась запись с новыми данными'):
+            response_json = response.json()
+            assert response_json["id"] == payoload["id"], f'Создалась некорректная запись'
+            assert response_json["name"] == payoload["name"], f'Создалась некорректная запись'
+            assert response_json["status"] == payoload["status"], f'Создалась некорректная запись'
+
+    @allure.title('Удаление питомца по ID (DELETE /pet/{petId})')
+    def test_delete_pet_with_ID(self, create_pet):
+        with allure.step('Подготовка тестовых данных'):
+            pet_id = create_pet["id"]
+
+        with allure.step('Отправка запроса на удаление питомца данных'):
+            response = requests.delete(f'{BASE_URL}/pet/{pet_id}')
+            assert response.status_code == 200, "Другой статус код"
+
+        with allure.step('Проверка, что питомец удален и его нет в бд'):
+            response = requests.get(f'{BASE_URL}/pet/{pet_id}')
+            assert response.status_code == 404, "Другой статус код"
