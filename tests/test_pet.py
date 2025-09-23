@@ -125,7 +125,7 @@ class TestPet:
             response = requests.get(f'{BASE_URL}/pet/{pet_id}')
             assert response.status_code == 404, "Другой статус код"
 
-    @allure.title('Получение списка питомцев по статусу (GET /pet/findByStatus)')
+    @allure.title('Получение списка питомцев по статусу positive (GET /pet/findByStatus)')
     @pytest.mark.parametrize(
         "status, expected_status_code",
         [
@@ -134,7 +134,7 @@ class TestPet:
             ("sold", 200)
         ]
     )
-    def test_get_pets_by_status(self, status, expected_status_code):
+    def test_get_pets_by_status_positive(self, status, expected_status_code):
         with allure.step(f'Отправка GET-запроса со статусом {status}'):
             response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": status})
 
@@ -142,10 +142,19 @@ class TestPet:
             assert response.status_code == expected_status_code, 'Статус код другой'
             assert isinstance(response.json(), list), "Ответ не является списком"
 
-            nonexistance_status = "xxxxxxx"
-
-        with allure.step(f'Отправка GET-запроса со статусом {nonexistance_status}'):
-            response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": nonexistance_status})
+    @allure.title('Получение списка питомцев по статусу negative (GET /pet/findByStatus)')
+    @pytest.mark.parametrize(
+        "status, expected_status_code",
+        [
+            ("nonexistance_status", 400),
+            (" ", 400)
+        ]
+    )
+    def test_get_pets_by_status_negative(self, status, expected_status_code):
+        with allure.step(f'Отправка GET-запроса со статусом {status}'):
+            response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": status})
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == 400, 'Статус код другой'
+            assert response.status_code == expected_status_code, 'Статус код другой'
+
+
