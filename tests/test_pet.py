@@ -131,8 +131,7 @@ class TestPet:
         [
             ("available", 200),
             ("pending", 200),
-            ("sold", 200),
-            # ("nonexistance status", 400) - оставить это  вариант пока не получается, иначе падает последний assert, необходимо больше знаний, как я поняла if/else помогло бы тут
+            ("sold", 200)
         ]
     )
     def test_get_pets_by_status(self, status, expected_status_code):
@@ -142,3 +141,11 @@ class TestPet:
         with allure.step('Проверка статус кода'):
             assert response.status_code == expected_status_code, 'Статус код другой'
             assert isinstance(response.json(), list), "Ответ не является списком"
+
+            nonexistance_status = "xxxxxxx"
+
+        with allure.step(f'Отправка GET-запроса со статусом {nonexistance_status}'):
+            response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": nonexistance_status})
+
+        with allure.step('Проверка статус кода'):
+            assert response.status_code == 400, 'Статус код другой'
