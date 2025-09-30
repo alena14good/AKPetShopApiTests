@@ -139,7 +139,7 @@ class TestPet:
             response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": status})
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == expected_status_code, 'Статус код другой'
+            assert response.status_code == expected_status_code, f'Ожидался код {expected_status_code}, но пришел {response.status_code}'
             assert isinstance(response.json(), list), "Ответ не является списком"
 
     @allure.title('Получение списка питомцев по статусу negative (GET /pet/findByStatus)')
@@ -155,6 +155,6 @@ class TestPet:
             response = requests.get(f'{BASE_URL}/pet/findByStatus', params={"status": status})
 
         with allure.step('Проверка статус кода'):
-            assert response.status_code == expected_status_code, 'Статус код другой'
+            assert response.status_code == expected_status_code, f'Ожидался код {expected_status_code}, но пришел {response.status_code}'
 
 
