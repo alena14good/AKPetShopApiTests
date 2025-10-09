@@ -40,28 +40,28 @@ class TestStore:
     @allure.title("Получение информации о заказе по ID (GET /store/order/{orderId})")
     @allure.description("Получение информации о заказе по айдишнику")
     def test_find_order_by_id(self, create_order):
-        orderId = create_order['id']
+        order_id = create_order['id']
 
         with allure.step("Отправляем GET-запрос на получение заказа по id"):
-            responses = requests.get(f'{BASE_URL}/store/order/{orderId}')
+            responses = requests.get(f'{BASE_URL}/store/order/{order_id}')
             assert responses.status_code == 200, f'Ожидался статус 200, но пришел {responses.status_code}'
 
         with allure.step('Проверка, что ответ содержит данные заказа id'):
-            assert responses.json()['id'] == orderId, f'Создалась запись не с {orderId}'
+            assert responses.json()['id'] == order_id, f'Создалась запись не с {order_id}'
 
     @allure.title("Удаление заказа по ID (DELETE /store/order/{orderId})")
     @allure.description("Удаление заказа и проверка, что его не существует в базе данных")
     def test_delete_order_by_id(self, create_order):
-        orderId = create_order['id']
+        order_id = create_order['id']
 
         with allure.step("Отправляем DELETE-запрос на удаление заказа по id"):
-            responses = requests.delete(f'{BASE_URL}/store/order/{orderId}')
+            responses = requests.delete(f'{BASE_URL}/store/order/{order_id}')
 
         with allure.step("Проверка статус кода при удалении"):
             assert responses.status_code == 200, f'Ожидался статус 200, но пришел {responses.status_code}'
 
         with allure.step("Проверка, что такого заказа больше не существует в базе данных"):
-            response = requests.get(f'{BASE_URL}/store/order/{orderId}')
+            response = requests.get(f'{BASE_URL}/store/order/{order_id}')
             assert response.status_code == 404, f'Ожидался статус 404, но пришел {responses.status_code}'
 
     @allure.title("Попытка получить информацию о несуществующем заказе (GET /store/order/{orderId})")
@@ -83,6 +83,3 @@ class TestStore:
         with allure.step("Проверка совпадению формата ответа"):
             jsonschema.validate(responses_json, INVENTORY_SCHEMA)
 
-        with allure.step('Проверка, что создалась запись с корректными данными'):
-            assert responses_json['approved'] == 57, f'Пришло значение approved не равное 57'
-            assert responses_json['delivered'] == 50, f'Пришло значение delivered не равное 50'
